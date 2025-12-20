@@ -52,7 +52,6 @@ const BazarView: React.FC<BazarViewProps> = ({
         return localTime.toISOString().slice(0, 16);
     };
 
-    // Prioritize 'cash' wallet as default
     const defaultCash = accounts.find(a => a.id === 'cash')?.id || 
                       accounts.find(a => a.name.toLowerCase().includes('cash'))?.id || 
                       accounts[0]?.id || '';
@@ -256,10 +255,9 @@ const BazarView: React.FC<BazarViewProps> = ({
                 </div>
             </div>
             
-            {/* Bazar Total Card: White background, gold text, lower height (p-5 instead of p-8) */}
             <div className="bg-white dark:bg-zinc-900 p-5 rounded-[40px] shadow-xl relative overflow-hidden border border-gray-50 dark:border-white/5">
                 <div className="relative z-10">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-md-primary opacity-80 mb-1">Bazar Total ({dateLabel})</p>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-luxe-ochre opacity-80 mb-1">Bazar Total ({dateLabel})</p>
                   <h2 className="text-3xl font-black text-gold-gradient tracking-tighter">
                     <span className="text-xl font-extrabold mr-1">Tk</span>
                     {totalBazarSpend.toLocaleString()}
@@ -281,14 +279,13 @@ const BazarView: React.FC<BazarViewProps> = ({
                         </div>
                       </div>
                     )}
-                    {/* Entry Form */}
                     <form onSubmit={handleQuickAdd} className="glass p-3 rounded-[24px] shadow-sm space-y-3">
                         <div className="grid grid-cols-[44px_1fr_80px_44px] gap-2 items-center">
                             <button type="button" onClick={() => fileInputRef.current?.click()} className="bg-md-primary/10 text-md-primary rounded-xl h-11 w-full flex items-center justify-center active:scale-90 transition-all">
                                 <Camera size={22} />
                             </button>
                             <input ref={itemInputRef} type="text" value={item} onChange={e => { setItem(e.target.value); if (processingIndex !== null) setProcessingIndex(null); }} placeholder="Item name" className="px-4 py-2 bg-black/5 dark:bg-white/5 rounded-xl font-semibold text-xs outline-none h-11 w-full dark:text-white" required />
-                            <input ref={priceInputRef} type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Tk" className="px-2 py-2 bg-black/5 dark:bg-white/5 rounded-xl font-black text-xs text-rose-600 outline-none h-11 w-full text-center" required />
+                            <input ref={priceInputRef} type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Tk" className="px-2 py-2 bg-black/5 dark:bg-white/5 rounded-xl font-black text-xs text-luxe-outflow outline-none h-11 w-full text-center" required />
                             <button type="submit" className="bg-md-primary text-white rounded-xl shadow-md active:scale-95 transition-all h-11 w-full flex items-center justify-center">
                                 <Plus size={24} strokeWidth={3} />
                             </button>
@@ -301,7 +298,6 @@ const BazarView: React.FC<BazarViewProps> = ({
                         </div>
                     </form>
 
-                    {/* Shopping List */}
                     <div className="glass rounded-[24px] shadow-sm overflow-hidden">
                         <div className="flex items-center justify-between px-5 py-3 cursor-pointer" onClick={() => setIsToBuyExpanded(!isToBuyExpanded)}>
                             <div className="flex items-center gap-2">
@@ -325,7 +321,7 @@ const BazarView: React.FC<BazarViewProps> = ({
                                                     <span className="text-[10px] font-black text-md-primary/40 min-w-[20px]">{idx + 1}.</span>
                                                     <span className="text-sm font-semibold text-md-on-surface dark:text-gray-200">{itemName}</span>
                                                 </div>
-                                                <button onClick={e => { e.stopPropagation(); removeFromToBuy(idx); }} className="p-1.5 text-gray-400 hover:text-rose-500 active:bg-rose-50 rounded-full">
+                                                <button onClick={e => { e.stopPropagation(); removeFromToBuy(idx); }} className="p-1.5 text-gray-400 hover:text-luxe-outflow active:bg-rose-50 rounded-full">
                                                     <X size={18} />
                                                 </button>
                                             </div>
@@ -336,7 +332,6 @@ const BazarView: React.FC<BazarViewProps> = ({
                         )}
                     </div>
 
-                    {/* Quick Pick */}
                     <div className="glass rounded-[24px] shadow-sm overflow-hidden transition-all">
                         <div className="flex items-center justify-between px-5 py-3 cursor-pointer" onClick={() => setIsPickListExpanded(!isPickListExpanded)}>
                             <div className="flex items-center gap-2">
@@ -365,7 +360,7 @@ const BazarView: React.FC<BazarViewProps> = ({
                                                 {name}
                                             </button>
                                             {isManagingTemplates && (
-                                                <button onClick={() => removeTemplate(name)} className="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full p-0.5 shadow-md"><X size={10} /></button>
+                                                <button onClick={() => removeTemplate(name)} className="absolute -top-2 -right-2 bg-luxe-outflow text-white rounded-full p-0.5 shadow-md"><X size={10} /></button>
                                             )}
                                         </div>
                                     ))}
@@ -408,12 +403,12 @@ const BazarView: React.FC<BazarViewProps> = ({
                                         
                                         return (
                                             <div key={timeKey} className="glass rounded-[32px] overflow-hidden border-black/5 shadow-sm">
-                                                <div className="px-4 py-2 bg-black/5 dark:bg-white/5 flex justify-between items-center border-b border-black/5">
+                                                <div className="px-4 py-2 bg-luxe-sand/30 flex justify-between items-center border-b border-black/5">
                                                     <div className="flex items-center gap-2 opacity-50">
-                                                        <Clock size={12} className="text-md-primary" />
+                                                        <Clock size={12} className="text-luxe-bronze" />
                                                         <span className="text-[9px] font-black uppercase tracking-widest dark:text-gray-300">{sessionTime}</span>
                                                     </div>
-                                                    <span className="text-[9px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Sum: Tk {session.sessionTotal.toLocaleString()}</span>
+                                                    <span className="text-[9px] font-black text-luxe-inflow uppercase tracking-widest">Sum: Tk {session.sessionTotal.toLocaleString()}</span>
                                                 </div>
                                                 <div className="divide-y divide-black/5 dark:divide-white/5">
                                                     {session.items.map(t => {
@@ -442,7 +437,6 @@ const BazarView: React.FC<BazarViewProps> = ({
             </div>
          </div>
 
-         {/* Edit Modal */}
          {editingTx && (
             <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
                 <div className="glass rounded-[32px] shadow-2xl w-full max-w-sm p-8 space-y-6">
@@ -462,7 +456,7 @@ const BazarView: React.FC<BazarViewProps> = ({
                         </div>
                     </div>
                     <div className="flex justify-between items-center pt-6 border-t border-black/5 dark:border-white/5">
-                        <button onClick={() => { if(confirm("Delete record?")) { onDeleteTransaction(editingTx.id); setEditingTx(null); } }} className="text-rose-500 p-3 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-2xl active:scale-90 transition-all"><Trash2 size={20} /></button>
+                        <button onClick={() => { if(confirm("Delete record?")) { onDeleteTransaction(editingTx.id); setEditingTx(null); } }} className="text-luxe-outflow p-3 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-2xl active:scale-90 transition-all"><Trash2 size={20} /></button>
                         <div className="flex gap-2">
                             <button onClick={() => setEditingTx(null)} className="px-5 py-3 font-black text-[10px] uppercase tracking-widest text-md-on-surface-variant hover:bg-black/5 rounded-2xl">Cancel</button>
                             <button onClick={saveEdit} className="px-6 py-3 bg-md-primary text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg active:scale-95">Save</button>

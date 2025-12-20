@@ -122,10 +122,10 @@ const FullMonthlyReport: React.FC<FullMonthlyReportProps> = ({ transactions, acc
 
     const getAmountColor = (type: string) => {
         switch(type) {
-            case 'income': return 'text-emerald-600 dark:text-emerald-400';
-            case 'expense': return 'text-rose-600 dark:text-rose-400';
+            case 'income': return 'text-luxe-inflow';
+            case 'expense': return 'text-luxe-outflow';
             case 'transfer': return 'text-md-primary dark:text-indigo-400';
-            case 'withdraw': return 'text-amber-600 dark:text-amber-400';
+            case 'withdraw': return 'text-luxe-ochre';
             default: return 'text-md-on-surface';
         }
     };
@@ -133,15 +133,14 @@ const FullMonthlyReport: React.FC<FullMonthlyReportProps> = ({ transactions, acc
     return (
         <div className="p-4 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300 pb-32">
             <div className="glass p-4 rounded-md-card flex justify-between items-center shadow-sm">
-                <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors"><ChevronLeft size={20}/></button>
+                <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors dark:text-white"><ChevronLeft size={20}/></button>
                 <div className="text-center">
-                  <h2 className="font-extrabold text-md-on-surface tracking-tight">{monthName}</h2>
-                  <p className="text-[9px] font-medium uppercase tracking-[0.2em] opacity-40">Monthly Performance</p>
+                  <h2 className="font-extrabold text-md-on-surface tracking-tight dark:text-white">{monthName}</h2>
+                  <p className="text-[9px] font-medium uppercase tracking-[0.2em] opacity-40 dark:text-white">Monthly Performance</p>
                 </div>
-                <button onClick={() => changeMonth(1)} className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors"><ChevronRight size={20}/></button>
+                <button onClick={() => changeMonth(1)} className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors dark:text-white"><ChevronRight size={20}/></button>
             </div>
 
-            {/* AI Insight Card with Mesh Gradient */}
             <div className="mesh-gradient-ai p-6 rounded-[32px] text-white shadow-xl relative overflow-hidden group border border-white/20">
                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity animate-mesh">
                   <Sparkles size={120} />
@@ -163,10 +162,10 @@ const FullMonthlyReport: React.FC<FullMonthlyReportProps> = ({ transactions, acc
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-                <StatBox label="Income" amount={stats.income} color="text-emerald-600 dark:text-emerald-400" bg="bg-emerald-500/10" icon={TrendingUp} />
-                <StatBox label="Expense" amount={stats.expense} color="text-rose-600 dark:text-rose-400" bg="bg-rose-500/10" icon={TrendingDown} />
+                <StatBox label="Income" amount={stats.income} color="text-luxe-inflow" bg="bg-luxe-inflow/10" icon={TrendingUp} />
+                <StatBox label="Expense" amount={stats.expense} color="text-luxe-outflow" bg="bg-luxe-outflow/10" icon={TrendingDown} />
                 <StatBox label="Transfer" amount={stats.transfer} color="text-md-primary dark:text-indigo-400" bg="bg-md-primary/10" icon={ArrowRightLeft} />
-                <StatBox label="Withdraw" amount={stats.withdraw} color="text-amber-600 dark:text-amber-400" bg="bg-amber-500/10" icon={Landmark} />
+                <StatBox label="Withdraw" amount={stats.withdraw} color="text-luxe-ochre" bg="bg-luxe-ochre/10" icon={Landmark} />
             </div>
 
             <div className="glass p-6 rounded-md-card shadow-sm">
@@ -177,15 +176,15 @@ const FullMonthlyReport: React.FC<FullMonthlyReportProps> = ({ transactions, acc
                 <div className="grid grid-cols-3 gap-4">
                     <div>
                         <p className="text-[8px] font-medium uppercase tracking-widest text-md-on-surface-variant/40 mb-1">Inflow</p>
-                        <p className="text-sm font-black text-emerald-600 dark:text-emerald-400">Tk {yearStats.income.toLocaleString()}</p>
+                        <p className="text-sm font-black text-luxe-inflow">Tk {yearStats.income.toLocaleString()}</p>
                     </div>
                     <div className="border-x border-black/5 dark:border-white/5 px-4">
                         <p className="text-[8px] font-medium uppercase tracking-widest text-md-on-surface-variant/40 mb-1">Outflow</p>
-                        <p className="text-sm font-black text-rose-600 dark:text-rose-400">Tk {yearStats.expense.toLocaleString()}</p>
+                        <p className="text-sm font-black text-luxe-outflow">Tk {yearStats.expense.toLocaleString()}</p>
                     </div>
                     <div>
                         <p className="text-[8px] font-medium uppercase tracking-widest text-md-on-surface-variant/40 mb-1">Net</p>
-                        <p className={`text-sm font-black ${yearStats.balance >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>Tk {yearStats.balance.toLocaleString()}</p>
+                        <p className={`text-sm font-black ${yearStats.balance >= 0 ? 'text-luxe-inflow' : 'text-luxe-outflow'}`}>Tk {yearStats.balance.toLocaleString()}</p>
                     </div>
                 </div>
             </div>
@@ -280,7 +279,7 @@ const FullMonthlyReport: React.FC<FullMonthlyReportProps> = ({ transactions, acc
                                         <p className="text-xs font-semibold uppercase tracking-widest text-md-on-surface-variant dark:text-gray-300">{monthName.split(' ')[0]} {day}</p>
                                     </div>
                                     <div className="flex items-center gap-3">
-                                        <p className="text-sm font-black text-rose-500">Tk {dayOut.toLocaleString()}</p>
+                                        <p className="text-sm font-black text-luxe-outflow">Tk {dayOut.toLocaleString()}</p>
                                         <ChevronDown size={14} className={`text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                                     </div>
                                 </button>

@@ -79,7 +79,6 @@ const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') !== 'light');
   
-  // Removed undefined function call isKeyboardVisibility()
   const isKeyboardVisible = useKeyboardVisibility();
 
   useEffect(() => {
@@ -216,7 +215,6 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-md-surface dark:bg-zinc-950 pb-32 transition-colors">
-      {/* Header Background changed to Premium Gold */}
       <header className="sticky top-0 z-50 mesh-gradient-primary px-4 pt-safe flex items-center justify-between shadow-lg h-[96px] border-b border-white/10">
           <div className="flex items-center gap-3.5">
             <div className="bg-white/20 backdrop-blur-md p-2.5 rounded-2xl text-white shadow-md border border-white/20"><LayoutDashboard size={24} /></div>
@@ -234,12 +232,11 @@ const App: React.FC = () => {
       <main className="max-w-md mx-auto">
         {activeTab === 'dashboard' && (
           <div className="p-6 space-y-6 animate-in fade-in duration-500">
-            {/* The Image-Inspired Balance Card */}
             <div className="bg-white dark:bg-zinc-900 p-8 rounded-[40px] shadow-2xl relative overflow-hidden border border-gray-50 dark:border-white/5">
                 <div className="relative z-10">
                   <div className="flex justify-between items-start mb-6">
                     <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-md-on-surface-variant opacity-60">Monthly Balance</p>
-                    <div className="px-4 py-1.5 bg-md-surface-container dark:bg-zinc-800 rounded-full text-[10px] font-bold text-md-on-surface-variant">Health: {summary.healthScore.toFixed(0)}%</div>
+                    <div className="px-4 py-1.5 bg-luxe-sand rounded-full text-[10px] font-bold text-luxe-bronze-text">Health: {summary.healthScore.toFixed(0)}%</div>
                   </div>
                   
                   <div className="flex items-baseline gap-1.5 mb-8">
@@ -265,10 +262,10 @@ const App: React.FC = () => {
             </div>
             
             <div className="grid grid-cols-2 gap-4">
-               <SummaryCard title="Today" amount={summary.todayExp} icon={CalendarDays} colorClass="text-rose-500" bgClass="bg-rose-500" />
+               <SummaryCard title="Today" amount={summary.todayExp} icon={CalendarDays} colorClass="text-luxe-outflow" bgClass="bg-luxe-outflow" />
                <SummaryCard title="Yearly Out" amount={summary.yearExp} icon={HistoryIcon} colorClass="text-md-primary" bgClass="bg-md-primary" />
-               <SummaryCard title="Inflow" amount={summary.inc} icon={TrendingUp} colorClass="text-emerald-500" bgClass="bg-emerald-500" />
-               <SummaryCard title="Outflow" amount={summary.exp} icon={TrendingDown} colorClass="text-rose-600" bgClass="bg-rose-600" />
+               <SummaryCard title="Inflow" amount={summary.inc} icon={TrendingUp} colorClass="text-luxe-inflow" bgClass="bg-luxe-inflow" />
+               <SummaryCard title="Outflow" amount={summary.exp} icon={TrendingDown} colorClass="text-luxe-outflow" bgClass="bg-luxe-outflow" />
             </div>
 
             <div className="space-y-4">

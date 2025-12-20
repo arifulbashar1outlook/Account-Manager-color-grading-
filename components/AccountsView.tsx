@@ -4,30 +4,38 @@ import { ArrowLeft, Plus, Edit2, Check, Save, Trash2, X, CreditCard } from 'luci
 import { Account } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 
+const PRESET_COLORS = [
+  '#101827', // Midnight Navy
+  '#1A1A1A', // Royal Onyx
+  '#9D843E', // Champagne Bronze
+  '#0E3B2D', // Deep Malachite
+  '#5E1914', // Burgundy Silk
+  '#B58E1B', // Luxe Ochre
+  '#2D5A27', // Antique Jade
+  '#A63D40', // Terra Cotta
+  '#6F6B55', // Sage
+  '#C5A028'  // Primary Gold
+];
+
+// Definition for AccountsView component props
 interface AccountsViewProps {
   accounts: Account[];
-  onUpdateAccounts: (updater: Account[] | ((prev: Account[]) => Account[])) => void;
+  onUpdateAccounts: (update: Account[] | ((prev: Account[]) => Account[])) => void;
   onBack: () => void;
 }
-
-const PRESET_COLORS = [
-  '#6366f1', '#10b981', '#f59e0b', '#ef4444', 
-  '#ec4899', '#8b5cf6', '#14b8a6', '#0ea5e9', 
-  '#f97316', '#64748b'
-];
 
 const AccountsView: React.FC<AccountsViewProps> = ({ accounts, onUpdateAccounts, onBack }) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
-  const [editColor, setEditColor] = useState('#6366f1');
+  const [editColor, setEditColor] = useState('#101827');
 
   const [newAccountName, setNewAccountName] = useState('');
-  const [newAccountColor, setNewAccountColor] = useState('#6366f1');
+  const [newAccountColor, setNewAccountColor] = useState('#101827');
 
   const handleStartEdit = (acc: Account) => {
     setEditingId(acc.id);
     setEditName(acc.name);
-    setEditColor(acc.color || '#6366f1');
+    setEditColor(acc.color || '#101827');
   };
 
   const handleSaveEdit = () => {
@@ -59,15 +67,22 @@ const AccountsView: React.FC<AccountsViewProps> = ({ accounts, onUpdateAccounts,
     };
     onUpdateAccounts(prev => [...prev, newAccount]);
     setNewAccountName('');
-    setNewAccountColor('#6366f1');
+    setNewAccountColor('#101827');
   };
 
   return (
     <div className="max-w-md mx-auto min-h-screen bg-md-surface dark:bg-zinc-950 pb-32 animate-in fade-in duration-300">
       <div className="px-6 space-y-6">
           <div className="flex items-center gap-3 pt-4 pb-2">
+              {/* Added a back button using the onBack prop */}
+              <button 
+                onClick={onBack} 
+                className="p-2 -ml-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full text-md-on-surface dark:text-white transition-colors"
+              >
+                <ArrowLeft size={24} />
+              </button>
               <CreditCard className="text-md-primary" size={24} />
-              <h2 className="text-3xl font-black tracking-tight text-md-on-surface">Wallets</h2>
+              <h2 className="text-3xl font-black tracking-tight text-md-on-surface dark:text-white">Wallets</h2>
           </div>
       </div>
 
@@ -146,7 +161,7 @@ const AccountsView: React.FC<AccountsViewProps> = ({ accounts, onUpdateAccounts,
                                    type="button"
                                    onClick={() => setEditingId(null)} 
                                    title="Cancel"
-                                   className="bg-gray-100 dark:bg-gray-700 p-3 rounded-xl text-md-on-surface"
+                                   className="bg-gray-100 dark:bg-gray-700 p-3 rounded-xl text-md-on-surface dark:text-white"
                                  >
                                      <X size={20} />
                                  </button>

@@ -164,7 +164,6 @@ const HistoryView: React.FC<HistoryViewProps> = ({ transactions, accounts, onUpd
                             </div>
                         </div>
 
-                        {/* Restricted edit fields for transfer */}
                         <div className="grid grid-cols-2 gap-4">
                             {editType === 'transfer' ? (
                                 <>
@@ -200,7 +199,7 @@ const HistoryView: React.FC<HistoryViewProps> = ({ transactions, accounts, onUpd
                         </div>
                     </div>
                     <div className="flex justify-between items-center pt-6 border-t border-black/5 dark:border-white/5">
-                        <button type="button" onClick={() => { if(window.confirm("Are you sure you want to delete this transaction?")) handleDelete(); }} className="p-3 text-rose-500 hover:bg-rose-500/10 rounded-2xl transition-all active:scale-90">
+                        <button type="button" onClick={() => { if(window.confirm("Are you sure you want to delete this transaction?")) handleDelete(); }} className="p-3 text-luxe-outflow hover:bg-rose-500/10 rounded-2xl transition-all active:scale-90">
                             <Trash2 size={20} />
                         </button>
                         <div className="flex gap-2">
@@ -215,14 +214,12 @@ const HistoryView: React.FC<HistoryViewProps> = ({ transactions, accounts, onUpd
          <div className="px-6 space-y-6">
             <h2 className="text-3xl font-black tracking-tight text-md-on-surface pt-4 pb-2 dark:text-white">History</h2>
             
-            {/* Search */}
             <div className="relative group">
                 <div className="absolute left-5 top-1/2 -translate-y-1/2 text-md-on-surface-variant opacity-40"><Search size={18} /></div>
                 <input type="text" placeholder="Search by name or category..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full glass px-12 py-4 rounded-[20px] text-sm font-semibold outline-none border-none focus:ring-2 focus:ring-md-primary/20 transition-all shadow-sm dark:text-white" />
                 {searchTerm && (<button type="button" onClick={() => setSearchTerm('')} className="absolute right-5 top-1/2 -translate-y-1/2 p-1 text-md-on-surface-variant hover:bg-black/5 rounded-full"><X size={14} /></button>)}
             </div>
 
-            {/* Type Filters */}
             <div className="flex gap-2.5 overflow-x-auto pb-2 -mx-2 px-2 no-scrollbar">
                 <FilterChip label="All" active={typeFilter === 'all'} onClick={() => setTypeFilter('all')} />
                 <FilterChip label="Expenses" active={typeFilter === 'expense'} onClick={() => setTypeFilter('expense')} icon={TrendingDown} />
@@ -230,7 +227,6 @@ const HistoryView: React.FC<HistoryViewProps> = ({ transactions, accounts, onUpd
                 <FilterChip label="Transfers" active={typeFilter === 'transfer'} onClick={() => setTypeFilter('transfer')} icon={ArrowRightLeft} />
             </div>
 
-            {/* Timeframe Selection */}
             <div className="space-y-4">
                 <div className="flex gap-2.5 overflow-x-auto no-scrollbar">
                     <FilterChip label="All Time" active={filterPeriod === 'all'} onClick={() => setFilterPeriod('all')} />
@@ -261,7 +257,6 @@ const HistoryView: React.FC<HistoryViewProps> = ({ transactions, accounts, onUpd
                 )}
             </div>
 
-            {/* Filtered Total Card: White background, gold text, lower height (p-5 instead of p-6) */}
             <div className="bg-white dark:bg-zinc-900 p-5 rounded-[40px] shadow-xl relative overflow-hidden border border-gray-50 dark:border-white/5">
                 <div className="relative z-10 space-y-1">
                     <div className="flex items-center gap-2 text-md-primary opacity-80">
@@ -302,7 +297,7 @@ const HistoryView: React.FC<HistoryViewProps> = ({ transactions, accounts, onUpd
                                       <SwipeableItem key={t.id} onEdit={() => startEditing(t)}>
                                           <div onClick={() => startEditing(t)} className={`flex items-center justify-between p-5 bg-white dark:bg-zinc-900 hover:bg-white/60 dark:hover:bg-zinc-800/60 transition-all cursor-pointer group active:bg-md-primary/5 ${idx !== dayTransactions.length - 1 ? 'border-b border-black/5 dark:border-white/5' : ''}`}>
                                               <div className="flex items-center gap-4">
-                                                  <div className={`w-12 h-12 rounded-[20px] flex items-center justify-center transition-all group-hover:scale-110 shadow-inner ${t.type === 'income' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : t.type === 'transfer' ? 'bg-md-primary/10 text-md-primary' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'}`}>
+                                                  <div className={`w-12 h-12 rounded-[20px] flex items-center justify-center transition-all group-hover:scale-110 shadow-inner ${t.type === 'income' ? 'bg-luxe-inflow/10 text-luxe-inflow' : t.type === 'transfer' ? 'bg-md-primary/10 text-md-primary' : 'bg-luxe-outflow/10 text-luxe-outflow'}`}>
                                                       {t.type === 'income' ? <TrendingUp size={22} /> : t.type === 'transfer' ? <ArrowRightLeft size={22} /> : <TrendingDown size={22} />}
                                                   </div>
                                                   <div className="space-y-0.5">
@@ -323,7 +318,7 @@ const HistoryView: React.FC<HistoryViewProps> = ({ transactions, accounts, onUpd
                                                   </div>
                                               </div>
                                               <div className="text-right space-y-0.5">
-                                                  <p className={`font-black text-sm tracking-tight ${t.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : t.type === 'expense' ? 'text-rose-600 dark:text-rose-400' : 'text-md-on-surface-variant'}`}>{t.type === 'income' ? '+' : t.type === 'expense' ? '-' : ''} Tk {t.amount.toLocaleString()}</p>
+                                                  <p className={`font-black text-sm tracking-tight ${t.type === 'income' ? 'text-luxe-inflow' : t.type === 'expense' ? 'text-luxe-outflow' : 'text-md-on-surface-variant'}`}>{t.type === 'income' ? '+' : t.type === 'expense' ? '-' : ''} Tk {t.amount.toLocaleString()}</p>
                                                   <p className="text-[9px] font-bold text-gray-400 uppercase opacity-40">{new Date(t.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                                               </div>
                                           </div>
