@@ -73,7 +73,7 @@ const App: React.FC = () => {
   const [bazarTemplates, setBazarTemplates] = useState<string[]>(() => getStoredBazarTemplates());
   const [toBuyList, setToBuyList] = useState<string[]>(() => getStoredToBuyList());
   
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('bazar');
   const [syncStatus, setSyncStatus] = useState<'synced' | 'pending' | 'syncing' | 'error' | 'none'>('none');
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
