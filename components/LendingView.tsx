@@ -15,7 +15,8 @@ import {
   ArrowDownCircle,
   ChevronDown,
   Calendar,
-  UserPlus
+  UserPlus,
+  CalendarDays
 } from 'lucide-react';
 import { Transaction, Category, AccountType, Account } from '../types';
 import SwipeableItem from './SwipeableItem';
@@ -73,11 +74,6 @@ const LendingView: React.FC<LendingViewProps> = ({ transactions, accounts, onAdd
     return Object.entries(people).map(([name, data]) => ({ name, ...data })).sort((a, b) => new Date(b.lastTxDate).getTime() - new Date(a.lastTxDate).getTime());
   }, [transactions]);
 
-  const maxBalance = useMemo(() => {
-      const vals = peopleData.map(p => Math.abs(p.balance));
-      return vals.length > 0 ? Math.max(...vals) : 1000;
-  }, [peopleData]);
-
   const filteredPeople = peopleData.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
   const personTransactions = useMemo(() => {
     if (!selectedPerson) return [];
@@ -126,20 +122,6 @@ const LendingView: React.FC<LendingViewProps> = ({ transactions, accounts, onAdd
   if (!selectedPerson) {
     return (
       <div className="max-w-md mx-auto min-h-screen bg-md-surface dark:bg-zinc-950 pb-32 animate-in fade-in duration-300">
-         {/* Renaming Person Modal */}
-         {renamingPerson && (
-            <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
-                <div className="bg-white dark:bg-zinc-900 rounded-[28px] shadow-2xl w-full max-w-sm p-6 space-y-6">
-                    <h3 className="text-xl font-bold">Edit Name</h3>
-                    <input type="text" value={renamingPerson.newName} onChange={(e) => setRenamingPerson({ ...renamingPerson, newName: e.target.value })} className="w-full px-4 py-3 bg-md-surface-container dark:bg-zinc-800 rounded-xl outline-none font-black" autoFocus />
-                    <div className="flex justify-end gap-2 pt-4 border-t dark:border-zinc-800">
-                        <button type="button" onClick={() => setRenamingPerson(null)} className="px-5 py-2.5 text-sm font-black rounded-full">Cancel</button>
-                        <button type="button" onClick={() => { transactions.forEach(t => { const d = getPersonData(t); if(d && d.name === renamingPerson.oldName) onUpdateTransaction({ ...t, description: t.description.replace(renamingPerson.oldName, renamingPerson.newName) }); }); setRenamingPerson(null); }} className="px-6 py-2.5 bg-md-primary text-white text-sm font-black rounded-full">Update</button>
-                    </div>
-                </div>
-            </div>
-         )}
-
          {/* Add New Person Modal */}
          {isAddingNew && (
             <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
@@ -247,6 +229,7 @@ const LendingView: React.FC<LendingViewProps> = ({ transactions, accounts, onAdd
                     <div className="space-y-4">
                        <input type="text" value={editDesc} onChange={(e) => setEditDesc(e.target.value)} className="w-full px-5 py-4 bg-black/5 dark:bg-white/5 rounded-2xl outline-none font-semibold text-sm dark:text-white border border-transparent focus:border-md-primary/30" />
                        <input type="number" value={editAmount} onChange={(e) => setEditAmount(e.target.value)} className="w-full px-5 py-4 bg-black/5 dark:bg-white/5 rounded-2xl font-black text-sm dark:text-white border border-transparent focus:border-md-primary/30" />
+                       <input type="datetime-local" value={editDate} onChange={(e) => setEditDate(e.target.value)} className="w-full px-5 py-4 bg-black/5 dark:bg-white/5 rounded-2xl font-bold text-sm dark:text-white border border-transparent focus:border-md-primary/30" />
                     </div>
                     <div className="flex justify-between items-center pt-4 border-t border-black/5">
                         <button type="button" onClick={() => { if(confirm("Delete record?")) { onDeleteTransaction(editingTx.id); setEditingTx(null); } }} className="p-3 text-luxe-outflow hover:bg-rose-50 rounded-2xl transition-all"><Trash2 size={20} /></button>
@@ -275,12 +258,40 @@ const LendingView: React.FC<LendingViewProps> = ({ transactions, accounts, onAdd
                     <button onClick={() => setFormMode('receive')} className={`flex-1 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all ${formMode === 'receive' ? 'bg-luxe-inflow text-white shadow-md' : 'text-md-on-surface-variant opacity-60'}`}>Receive</button>
                 </div>
 
-                <div className="flex gap-3">
-                    <div className="relative flex-1">
-                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-gray-400 opacity-60">Tk</span>
-                       <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" className="w-full pl-10 pr-4 py-4 bg-black/5 dark:bg-white/5 rounded-2xl outline-none font-black text-lg dark:text-white border border-transparent focus:border-md-primary/30" />
+                <div className="space-y-4">
+                    <div className="relative">
+                        <label className="text-[9px] font-black uppercase tracking-widest text-md-primary opacity-60 mb-2 block ml-1">Transaction Date</label>
+                        <div className="relative">
+                            <input 
+                                type="date" 
+                                value={date} 
+                                onChange={e => setDate(e.target.value)} 
+                                className="w-full px-5 py-4 bg-black/5 dark:bg-white/5 rounded-2xl outline-none font-bold text-sm dark:text-white border border-transparent focus:border-md-primary/30" 
+                            />
+                            <CalendarDays size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-md-primary opacity-40 pointer-events-none" />
+                        </div>
                     </div>
-                    <button onClick={handleTransaction} disabled={!amount} className="bg-md-primary text-white px-6 rounded-2xl disabled:opacity-50 shadow-lg active:scale-95 transition-all"><Plus size={24} strokeWidth={3} /></button>
+                    
+                    <div className="flex gap-3">
+                        <div className="relative flex-1">
+                           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-gray-400 opacity-60">Tk</span>
+                           <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" className="w-full pl-10 pr-4 py-4 bg-black/5 dark:bg-white/5 rounded-2xl outline-none font-black text-lg dark:text-white border border-transparent focus:border-md-primary/30" />
+                        </div>
+                        <button onClick={handleTransaction} disabled={!amount} className="bg-md-primary text-white px-6 rounded-2xl disabled:opacity-50 shadow-lg active:scale-95 transition-all"><Plus size={24} strokeWidth={3} /></button>
+                    </div>
+
+                    <div className="flex items-center gap-3 px-1">
+                        <label className="text-[9px] font-black uppercase tracking-widest text-gray-400">Wallet:</label>
+                        <select 
+                            value={account}
+                            onChange={(e) => setAccount(e.target.value)}
+                            className="text-[10px] border-none bg-transparent outline-none font-black text-md-primary uppercase tracking-tight"
+                        >
+                            {accounts.map(a => (
+                                <option key={a.id} value={a.id}>{a.name}</option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
             </div>
 
