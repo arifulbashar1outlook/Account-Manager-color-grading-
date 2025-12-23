@@ -33,18 +33,22 @@ const LendingView: React.FC<LendingViewProps> = ({ transactions, accounts, onAdd
   const [selectedPerson, setSelectedPerson] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   
+  const getLocalDateTime = () => {
+    const now = new Date();
+    const offsetMs = now.getTimezoneOffset() * 60000;
+    const localTime = new Date(now.getTime() - offsetMs);
+    return localTime.toISOString().slice(0, 16);
+  };
+
   const defaultCash = accounts.find(a => a.id === 'cash')?.id || accounts[0]?.id || '';
 
   const [amount, setAmount] = useState('');
   const [account, setAccount] = useState<AccountType>(defaultCash);
   const [formMode, setFormMode] = useState<'give' | 'receive'>('give');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [dateTime, setDateTime] = useState(getLocalDateTime());
 
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [newPersonName, setNewPersonName] = useState('');
-
-  const [renamingPerson, setRenamingPerson] = useState<{oldName: string, newName: string} | null>(null);
-  const [deletingPerson, setDeletingPerson] = useState<string | null>(null);
 
   const [editingTx, setEditingTx] = useState<Transaction | null>(null);
   const [editDesc, setEditDesc] = useState('');
@@ -87,7 +91,14 @@ const LendingView: React.FC<LendingViewProps> = ({ transactions, accounts, onAdd
     if (!amount || !selectedPerson) return;
     const description = formMode === 'give' ? `Given to ${selectedPerson}` : `Received from ${selectedPerson}`;
     const type = formMode === 'give' ? 'expense' : 'income';
-    onAddTransaction({ amount: parseFloat(amount), type, category: Category.LENDING, description, date: new Date(date).toISOString(), accountId: account });
+    onAddTransaction({ 
+      amount: parseFloat(amount), 
+      type, 
+      category: Category.LENDING, 
+      description, 
+      date: new Date(dateTime).toISOString(), 
+      accountId: account 
+    });
     setAmount('');
   };
 
@@ -108,7 +119,7 @@ const LendingView: React.FC<LendingViewProps> = ({ transactions, accounts, onAdd
         const localIso = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
         setEditDate(localIso);
     } catch (e) {
-        setEditDate(new Date().toISOString().slice(0, 16));
+        setEditDate(getLocalDateTime());
     }
     setEditAccount(t.accountId);
   };
@@ -122,7 +133,6 @@ const LendingView: React.FC<LendingViewProps> = ({ transactions, accounts, onAdd
   if (!selectedPerson) {
     return (
       <div className="max-w-md mx-auto min-h-screen bg-md-surface dark:bg-zinc-950 pb-32 animate-in fade-in duration-300">
-         {/* Add New Person Modal */}
          {isAddingNew && (
             <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
                <div className="glass rounded-[32px] shadow-2xl w-full max-w-sm p-8 space-y-6">
@@ -260,15 +270,15 @@ const LendingView: React.FC<LendingViewProps> = ({ transactions, accounts, onAdd
 
                 <div className="space-y-4">
                     <div className="relative">
-                        <label className="text-[9px] font-black uppercase tracking-widest text-md-primary opacity-60 mb-2 block ml-1">Transaction Date</label>
+                        <label className="text-[9px] font-black uppercase tracking-widest text-md-primary opacity-60 mb-2 block ml-1">Transaction Date & Time</label>
                         <div className="relative">
                             <input 
-                                type="date" 
-                                value={date} 
-                                onChange={e => setDate(e.target.value)} 
+                                type="datetime-local" 
+                                value={dateTime} 
+                                onChange={e => setDateTime(e.target.value)} 
                                 className="w-full px-5 py-4 bg-black/5 dark:bg-white/5 rounded-2xl outline-none font-bold text-sm dark:text-white border border-transparent focus:border-md-primary/30" 
                             />
-                            <CalendarDays size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-md-primary opacity-40 pointer-events-none" />
+                            <Clock size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-md-primary opacity-40 pointer-events-none" />
                         </div>
                     </div>
                     
@@ -317,7 +327,7 @@ const LendingView: React.FC<LendingViewProps> = ({ transactions, accounts, onAdd
                                            </div>
                                            <div>
                                               <p className="font-bold text-sm dark:text-white">{data.type === 'give' ? 'You Lent' : 'They Paid'}</p>
-                                              <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 opacity-60">{new Date(t.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}</p>
+                                              <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 opacity-60">{new Date(t.date).toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>
                                            </div>
                                        </div>
                                        <p className={`font-black text-sm ${data.type === 'give' ? 'text-luxe-outflow' : 'text-luxe-inflow'}`}>
