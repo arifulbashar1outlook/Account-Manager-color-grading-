@@ -77,7 +77,7 @@ const App: React.FC = () => {
   const [syncStatus, setSyncStatus] = useState<'synced' | 'pending' | 'syncing' | 'error' | 'none'>('none');
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') !== 'light');
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
   
   const isKeyboardVisible = useKeyboardVisibility();
 
@@ -232,6 +232,23 @@ const App: React.FC = () => {
       <main className="max-w-md mx-auto">
         {activeTab === 'dashboard' && (
           <div className="p-6 space-y-6 animate-in fade-in duration-500">
+            {/* Wallets Moved to Top */}
+            <div className="space-y-4">
+               <h3 className="font-bold text-[11px] uppercase tracking-widest opacity-40 px-1 dark:text-white">Active Wallets</h3>
+               <div className="grid gap-3">
+                 {accounts.map(acc => (
+                   <div key={acc.id} className="glass p-6 rounded-[32px] flex justify-between items-center shadow-sm">
+                      <div className="flex items-center gap-4">
+                        <div className="w-1.5 h-9 rounded-full" style={{ backgroundColor: acc.color }}></div>
+                        <p className="font-extrabold text-lg" style={{ color: acc.color }}>{acc.name}</p>
+                      </div>
+                      <p className="font-black text-sm" style={{ color: acc.color }}>Tk {accountBalances[acc.id]?.toLocaleString()}</p>
+                   </div>
+                 ))}
+               </div>
+            </div>
+
+            {/* Main Balance Card */}
             <div className="bg-white dark:bg-zinc-900 p-8 rounded-[40px] shadow-2xl relative overflow-hidden border border-gray-50 dark:border-white/5">
                 <div className="relative z-10">
                   <div className="flex justify-between items-start mb-6">
@@ -266,21 +283,6 @@ const App: React.FC = () => {
                <SummaryCard title="Yearly Out" amount={summary.yearExp} icon={HistoryIcon} colorClass="text-md-primary" bgClass="bg-md-primary" />
                <SummaryCard title="Inflow" amount={summary.inc} icon={TrendingUp} colorClass="text-luxe-inflow" bgClass="bg-luxe-inflow" />
                <SummaryCard title="Outflow" amount={summary.exp} icon={TrendingDown} colorClass="text-luxe-outflow" bgClass="bg-luxe-outflow" />
-            </div>
-
-            <div className="space-y-4">
-               <h3 className="font-bold text-[11px] uppercase tracking-widest opacity-40 px-1 dark:text-white">Wallets</h3>
-               <div className="grid gap-3">
-                 {accounts.map(acc => (
-                   <div key={acc.id} className="glass p-6 rounded-[32px] flex justify-between items-center shadow-sm">
-                      <div className="flex items-center gap-4">
-                        <div className="w-1.5 h-9 rounded-full" style={{ backgroundColor: acc.color }}></div>
-                        <p className="font-extrabold text-lg" style={{ color: acc.color }}>{acc.name}</p>
-                      </div>
-                      <p className="font-black text-sm dark:text-white">Tk {accountBalances[acc.id]?.toLocaleString()}</p>
-                   </div>
-                 ))}
-               </div>
             </div>
           </div>
         )}
