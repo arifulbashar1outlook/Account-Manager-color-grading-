@@ -52,19 +52,22 @@ export const analyzeReceipt = async (base64Image: string, mimeType: string): Pro
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
   try {
+    // Corrected: Wrapped multi-part content in an object with `parts` as per SDK guidelines.
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash-image',
-      contents: [
-        {
-          inlineData: {
-            data: base64Image,
-            mimeType: mimeType
+      contents: {
+        parts: [
+          {
+            inlineData: {
+              data: base64Image,
+              mimeType: mimeType
+            }
+          },
+          {
+            text: "Analyze this bazar memo/receipt and extract all items with their prices. Return a JSON array of objects with 'name' and 'price' (number). If a price is unclear, use 0. Return ONLY the JSON."
           }
-        },
-        {
-          text: "Analyze this bazar memo/receipt and extract all items with their prices. Return a JSON array of objects with 'name' and 'price' (number). If a price is unclear, use 0. Return ONLY the JSON."
-        }
-      ],
+        ]
+      },
       config: {
         responseMimeType: "application/json",
         responseSchema: {

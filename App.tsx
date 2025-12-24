@@ -12,6 +12,7 @@ import {
   PlusCircle,
   RotateCw,
   CloudUpload,
+  CloudDownload,
   Activity,
   Wallet as WalletIcon,
   FileSpreadsheet,
@@ -24,7 +25,13 @@ import {
   Sun,
   Moon,
   CalendarDays,
-  History as HistoryIcon
+  History as HistoryIcon,
+  Settings,
+  User,
+  ExternalLink,
+  ChevronRight,
+  Coffee,
+  ShieldCheck
 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -73,7 +80,7 @@ const App: React.FC = () => {
   const [bazarTemplates, setBazarTemplates] = useState<string[]>(() => getStoredBazarTemplates());
   const [toBuyList, setToBuyList] = useState<string[]>(() => getStoredToBuyList());
   
-  const [activeTab, setActiveTab] = useState('bazar');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [syncStatus, setSyncStatus] = useState<'synced' | 'pending' | 'syncing' | 'error' | 'none'>('none');
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -186,7 +193,7 @@ const App: React.FC = () => {
     const exp = filteredMonth.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
     const yearExp = filteredYear.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
     
-    const dailyAvg = exp / now.getDate();
+    const dailyAvg = exp / (now.getDate() || 1);
     const projectedExp = dailyAvg * daysInMonth;
     const healthScore = Math.min(100, Math.max(0, inc > 0 ? ((inc - exp) / inc) * 100 : 0));
 
@@ -226,7 +233,7 @@ const App: React.FC = () => {
               </div>
             </div>
           </div>
-          <button onClick={() => setIsMenuOpen(true)} className="p-3.5 rounded-full bg-white/10 text-white border border-white/20 shadow-sm active:scale-90"><Menu size={24}/></button>
+          <button onClick={() => setIsMenuOpen(true)} className="p-3.5 rounded-full bg-white/10 text-white border border-white/20 shadow-sm active:scale-90 transition-all"><Menu size={24}/></button>
       </header>
 
       <main className="max-w-md mx-auto">
@@ -310,19 +317,85 @@ const App: React.FC = () => {
 
       {!isKeyboardVisible && activeTab === 'dashboard' && <button onClick={() => setActiveTab('input')} className="fixed bottom-[100px] right-6 w-16 h-16 bg-md-primary text-white rounded-[24px] shadow-2xl flex items-center justify-center z-40 border border-white/20 transition-transform active:scale-90 shadow-[0_8px_30px_rgba(197,160,40,0.4)]"><Plus size={32} strokeWidth={3} /></button>}
 
+      {/* Cozy side menu enhancement */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm animate-in fade-in duration-300" onClick={() => setIsMenuOpen(false)}>
-           <div className="absolute right-0 top-0 bottom-0 w-[300px] glass p-8 pt-safe animate-in slide-in-from-right duration-400 rounded-l-[40px] shadow-2xl overflow-y-auto" onClick={e => e.stopPropagation()}>
-              <div className="flex justify-between items-center mb-8 py-4 border-b border-black/5 dark:border-white/5"><h3 className="font-extrabold text-xl dark:text-white">Settings</h3><button onClick={() => setIsMenuOpen(false)} className="p-2 dark:text-white hover:bg-black/5 rounded-full"><XIcon size={24}/></button></div>
-              <div className="space-y-1.5">
-                 <MenuBtn onClick={() => { setDarkMode(!darkMode); }} icon={darkMode ? Sun : Moon} label={darkMode ? "Light Mode" : "Dark Mode"} />
-                 <MenuBtn onClick={() => { triggerAutoPush(); setIsMenuOpen(false); }} icon={CloudUpload} label="Sync: Push to Cloud" color="text-emerald-500" />
-                 <MenuBtn onClick={() => { handleSyncPull(); setIsMenuOpen(false); }} icon={RotateCw} label="Sync: Pull from Cloud" color="text-amber-500" />
-                 <div className="h-px bg-black/5 dark:bg-white/5 my-4"></div>
-                 <MenuBtn onClick={() => { setActiveTab('sync-setup'); setIsMenuOpen(false); }} icon={FileSpreadsheet} label="Configure Sync" />
-                 <MenuBtn onClick={() => { setActiveTab('wallet-manager'); setIsMenuOpen(false); }} icon={CreditCard} label="Manage Wallets" />
-                 <MenuBtn onClick={() => { setActiveTab('lending'); setIsMenuOpen(false); }} icon={HandCoins} label="Lending & Debt" />
-                 <MenuBtn onClick={() => { setActiveTab('ai-setup'); setIsMenuOpen(false); }} icon={Sparkles} label="AI Settings" />
+        <div className="fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm animate-in fade-in duration-400" onClick={() => setIsMenuOpen(false)}>
+           <div className="absolute right-0 top-0 bottom-0 w-[310px] bg-luxe-sand/98 dark:bg-zinc-950/98 backdrop-blur-3xl p-6 pt-safe animate-in slide-in-from-right duration-500 rounded-l-[48px] shadow-[-20px_0_60px_rgba(0,0,0,0.2)] flex flex-col" onClick={e => e.stopPropagation()}>
+              
+              {/* Refined Header Section */}
+              <div className="flex items-center justify-between mb-10 px-2 py-4">
+                <div className="flex items-center gap-4">
+                   <div className="relative">
+                      <div className="w-16 h-16 rounded-[24px] mesh-gradient-primary flex items-center justify-center text-white shadow-xl border-2 border-white/40 transform -rotate-3 transition-all hover:rotate-0 hover:scale-105 active:scale-95">
+                         <User size={32} />
+                      </div>
+                      <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 rounded-full border-4 border-luxe-sand dark:border-zinc-950 shadow-sm flex items-center justify-center">
+                         <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                      </div>
+                   </div>
+                   <div>
+                      <h3 className="font-black text-xl dark:text-white leading-tight">Welcome!</h3>
+                      <p className="text-[10px] font-black text-md-primary uppercase tracking-[0.25em] opacity-50 mt-1">Personal Hub</p>
+                   </div>
+                </div>
+                <button onClick={() => setIsMenuOpen(false)} className="p-3.5 bg-white/40 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 rounded-2xl transition-all active:scale-90 border border-black/5 dark:border-white/10 shadow-sm"><XIcon size={20} className="dark:text-white opacity-60"/></button>
+              </div>
+
+              {/* Menu Content Grouped Elegantly */}
+              <div className="flex-1 overflow-y-auto no-scrollbar space-y-9 pr-1">
+                
+                {/* Visual Settings Section */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 ml-4">
+                     <Sun size={12} className="text-md-primary opacity-40" />
+                     <p className="text-[9px] font-black uppercase tracking-[0.3em] text-md-on-surface-variant/40">Visual Experience</p>
+                  </div>
+                  <MenuBtn onClick={() => setDarkMode(!darkMode)} icon={darkMode ? Sun : Moon} label={darkMode ? "Switch to Light" : "Switch to Dark"} description="Gentle on your eyes" />
+                </div>
+
+                {/* Account Actions Section */}
+                <div className="space-y-4">
+                   <div className="flex items-center gap-2 ml-4">
+                     <WalletIcon size={12} className="text-md-primary opacity-40" />
+                     <p className="text-[9px] font-black uppercase tracking-[0.3em] text-md-on-surface-variant/40">Vault & Cloud</p>
+                  </div>
+                  <div className="grid gap-2.5">
+                    <MenuBtn onClick={() => { triggerAutoPush(); setIsMenuOpen(false); }} icon={CloudUpload} label="Sync: Push" description="Backup to your sheet" color="text-emerald-500" />
+                    <MenuBtn onClick={() => { handleSyncPull(); setIsMenuOpen(false); }} icon={CloudDownload} label="Sync: Pull" description="Restore latest data" color="text-amber-500" />
+                    <MenuBtn onClick={() => { setActiveTab('sync-setup'); setIsMenuOpen(false); }} icon={FileSpreadsheet} label="Cloud Settings" description="Setup sync URL" />
+                    <MenuBtn onClick={() => { setActiveTab('wallet-manager'); setIsMenuOpen(false); }} icon={CreditCard} label="Wallet Manager" description="Manage your accounts" />
+                  </div>
+                </div>
+
+                {/* Intelligence & Extras */}
+                <div className="space-y-4">
+                   <div className="flex items-center gap-2 ml-4">
+                     <Bot size={12} className="text-md-primary opacity-40" />
+                     <p className="text-[9px] font-black uppercase tracking-[0.3em] text-md-on-surface-variant/40">Smart Tools</p>
+                  </div>
+                  <div className="grid gap-2.5">
+                    <MenuBtn onClick={() => { setActiveTab('lending'); setIsMenuOpen(false); }} icon={HandCoins} label="Lending & Debt" description="Track who owes who" />
+                    <MenuBtn onClick={() => { setActiveTab('ai-setup'); setIsMenuOpen(false); }} icon={Sparkles} label="AI Intelligence" description="Manage Gemini insights" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Menu Footer Cozy Signature */}
+              <div className="mt-auto pt-8 border-t border-black/5 dark:border-white/10">
+                 <div className="flex flex-col items-center gap-4 opacity-30">
+                    <div className="flex items-center gap-3">
+                       <Coffee size={14} className="text-md-primary" />
+                       <span className="text-[9px] font-black uppercase tracking-[0.3em]">Crafted for Finance</span>
+                    </div>
+                    <div className="flex items-center justify-between w-full px-4 text-[8px] font-bold uppercase tracking-widest">
+                       <span>v2.6.5 Build</span>
+                       <div className="flex items-center gap-1">
+                          <span>Secure</span>
+                          {/* Corrected: Added ShieldCheck to lucide-react imports */}
+                          <ShieldCheck size={10} />
+                       </div>
+                    </div>
+                 </div>
               </div>
            </div>
         </div>
@@ -332,10 +405,20 @@ const App: React.FC = () => {
   );
 };
 
-const MenuBtn = ({ onClick, icon: Icon, label, color }: any) => (
-  <button onClick={onClick} className="w-full flex items-center gap-4 py-4 px-6 rounded-2xl hover:bg-md-primary/10 dark:hover:bg-md-primary/20 text-sm font-semibold transition-all active:scale-95 group">
-     <div className={`p-2.5 bg-md-primary/5 dark:bg-white/5 rounded-xl ${color || 'text-md-primary'} group-hover:scale-110 transition-transform`}><Icon size={20} /></div>
-     <span className="dark:text-white">{label}</span>
+// Enhanced Cozy Button Component
+const MenuBtn = ({ onClick, icon: Icon, label, description, color }: any) => (
+  <button 
+    onClick={onClick} 
+    className="w-full flex items-center gap-4 py-4 px-5 rounded-[30px] bg-white/40 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 text-left transition-all active:scale-[0.97] border border-black/5 dark:border-white/5 shadow-sm group"
+  >
+     <div className={`p-3.5 bg-md-primary/10 dark:bg-white/5 rounded-[20px] ${color || 'text-md-primary'} group-hover:scale-110 group-hover:bg-md-primary group-hover:text-white transition-all shadow-inner`}>
+        <Icon size={20} strokeWidth={2.5} />
+     </div>
+     <div className="flex-1">
+        <span className="block text-[13px] font-black dark:text-white group-hover:translate-x-1 transition-transform tracking-tight">{label}</span>
+        {description && <span className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 group-hover:translate-x-1 transition-transform opacity-70">{description}</span>}
+     </div>
+     <ChevronRight size={16} className="text-gray-300 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
   </button>
 );
 
